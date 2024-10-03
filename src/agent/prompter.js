@@ -18,8 +18,10 @@ export class Prompter {
         this.profile = JSON.parse(readFileSync(fp, 'utf8'));
         this.convo_examples = null;
         this.coding_examples = null;
+        let matches = process.env.BLAH.matchAll(/-(.[a-z0-9]+)$/g);
+        this.name = "rhbot_" + matches.next().value[1];
+        console.log(this.name);
 
-        let name = process.env.HOSTNAME || this.profile.name;
         let chat = process.env.MODEL || this.profile.model;
         let url = process.env.MODEL_SERVER_ENDPOINT || this.profile.url;
         if (typeof chat === 'string' || chat instanceof String) {
@@ -76,8 +78,8 @@ export class Prompter {
             console.log('Unknown embedding: ', embedding ? embedding.api : '[NOT SPECIFIED]', '. Using word overlap.');
         }
 
-        mkdirSync(`./bots/${name}`, { recursive: true });
-        writeFileSync(`./bots/${name}/last_profile.json`, JSON.stringify(this.profile, null, 4), (err) => {
+        mkdirSync(`./bots/${this.name}`, { recursive: true });
+        writeFileSync(`./bots/${this.name}/last_profile.json`, JSON.stringify(this.profile, null, 4), (err) => {
             if (err) {
                 throw err;
             }
@@ -86,7 +88,7 @@ export class Prompter {
     }
 
     getName() {
-        return process.env.HOSTNAME || this.profile.name;
+        return this.name;
     }
 
     getInitModes() {
