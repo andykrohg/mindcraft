@@ -1,12 +1,12 @@
 export default 
 {
-    "minecraft_version": "1.19", // supports up to 1.20.4
+    "minecraft_version": process.env.MINECRAFT_SERVER_VERSION || "1.19.4", // supports up to 1.20.4
     "host": process.env.MINECRAFT_SERVER_HOST || "localhost", //minecraft server host 
     "port": process.env.MINECRAFT_SERVER_PORT || 8080, //minecraft server port
     "auth": "offline", // or "microsoft"
     
     "profiles": [
-        `./${process.env.PROFILE || "llama"}.json`,
+        `./profiles/${process.env.PROFILE || "llama"}.json`,
         // add more profiles here, check ./profiles/ for more
         // more than 1 profile will require you to /msg each bot indivually
     ],

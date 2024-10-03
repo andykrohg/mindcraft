@@ -20,7 +20,7 @@ export class Prompter {
         this.coding_examples = null;
 
         let name = this.profile.name;
-        let chat = this.profile.model;
+        let chat = process.env.MODEL || this.profile.model;
         let url = process.env.MODEL_SERVER_ENDPOINT || this.profile.url;
         if (typeof chat === 'string' || chat instanceof String) {
             chat = {model: chat};
