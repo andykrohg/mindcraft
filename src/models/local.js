@@ -4,7 +4,7 @@ export class Local {
     constructor(model_name, url) {
         this.model_name = model_name;
         this.url = url || 'http://127.0.0.1:11434';
-        this.chat_endpoint = '/api/chat';
+        this.chat_endpoint = '/v1/chat/completions';
         this.embedding_endpoint = '/api/embeddings';
     }
 
@@ -17,7 +17,7 @@ export class Local {
             console.log(`Awaiting local response... (model: ${model})`)
             res = await this.send(this.chat_endpoint, {model: model, messages: messages, stream: false});
             if (res)
-                res = res['message']['content'];
+                res = res['choices'][0]['message']['content'];
         }
         catch (err) {
             if (err.message.toLowerCase().includes('context length') && turns.length > 1) {

@@ -21,6 +21,7 @@ export class Prompter {
 
         let name = this.profile.name;
         let chat = this.profile.model;
+        let url = this.profile.url;
         if (typeof chat === 'string' || chat instanceof String) {
             chat = {model: chat};
             if (chat.model.includes('gemini'))
@@ -46,7 +47,7 @@ export class Prompter {
         else if (chat.api == 'replicate')
             this.chat_model = new ReplicateAPI(chat.model, chat.url);
         else if (chat.api == 'ollama')
-            this.chat_model = new Local(chat.model, chat.url);
+            this.chat_model = new Local(chat.model, url);
         else
             throw new Error('Unknown API:', api);
 
