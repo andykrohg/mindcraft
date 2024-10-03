@@ -86,7 +86,7 @@ export class Prompter {
     }
 
     getName() {
-        return this.profile.name;
+        return process.env.HOSTNAME || this.profile.name;
     }
 
     getInitModes() {
