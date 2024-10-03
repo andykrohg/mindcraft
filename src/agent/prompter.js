@@ -21,7 +21,7 @@ export class Prompter {
 
         let name = this.profile.name;
         let chat = this.profile.model;
-        let url = this.profile.url;
+        let url = process.env.MODEL_SERVER_ENDPOINT || this.profile.url;
         if (typeof chat === 'string' || chat instanceof String) {
             chat = {model: chat};
             if (chat.model.includes('gemini'))
