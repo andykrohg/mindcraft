@@ -42,6 +42,7 @@ export class Local {
         const url = new URL(endpoint, this.url);
         let method = 'POST';
         let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
         const request = new Request(url, {method, headers, body: JSON.stringify(body)});
         let data = null;
         try {
