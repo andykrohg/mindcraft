@@ -17,6 +17,6 @@ export default
     "code_timeout_mins": 10, // minutes code is allowed to run. -1 for no timeout
     
     "max_commands": -1, // max number of commands to use in a response. -1 for no limit
-    "verbose_commands": true, // show full command syntax
+    "verbose_commands": false, // show full command syntax
     "narrate_behavior": true, // chat simple automatic actions ('Picking up item!')
 }
