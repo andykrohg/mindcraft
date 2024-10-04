@@ -337,4 +337,14 @@ export const actionsList = [
             return 'Set npc goal: ' + agent.npc.data.curr_goal.name;
         }
     },
+    {
+        name: '!spawnEntity',
+        description: 'Summon an entity.',
+        params: {
+            'entity_name': '(string) The name of the entity to summon.'
+        },
+        perform: wrapExecution(async (agent, entity_name) => {
+            await skills.spawnEntity(agent.bot, entity_name);
+        })
+    },
 ];

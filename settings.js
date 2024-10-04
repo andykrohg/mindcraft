@@ -6,7 +6,7 @@ export default
     "auth": "offline", // or "microsoft"
     
     "profiles": [
-        `./profiles/${process.env.PROFILE || "llama"}.json`,
+        `./profiles/${process.env.PROFILE || "demojam"}.json`,
         // add more profiles here, check ./profiles/ for more
         // more than 1 profile will require you to /msg each bot indivually
     ],

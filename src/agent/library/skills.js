@@ -1236,3 +1236,21 @@ export async function activateNearestBlock(bot, type) {
     log(bot, `Activated ${type} at x:${block.position.x.toFixed(1)}, y:${block.position.y.toFixed(1)}, z:${block.position.z.toFixed(1)}.`);
     return true;
 }
+
+export async function spawnEntity(bot, type) {
+    /**
+     * Spawn an entity of the given type.
+     * @param {MinecraftBot} bot, reference to the minecraft bot.
+     * @param {string} type, the type of entity to spawn.
+     * @returns {Promise<boolean>} true if the entity was spawned, false otherwise.
+     * @example
+     * await skills.spawnEntity(bot, "cow");
+     **/
+    if (bot.modes.isOn('cheat')) {
+        bot.chat(`/summon ${type}`);
+        log(bot, `Spawned ${type}.`);
+        return true;
+    }
+    log(bot, `Cannot spawn entities without cheats enabled.`);
+    return false;
+}
