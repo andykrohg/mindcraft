@@ -138,12 +138,17 @@
         [
             {"role": "user", "content": "javathelo: spawn a pig"},
             {"role": "assistant", "content": "!spawnEntity('pig')"},
-            {"role": "system", "content": "Code Output:\nYou have spawned a pig.\nCode execution finished successfully."}
+            {"role": "system", "content": "Code Output:\nI have spawned a pig.\nCode execution finished successfully."}
         ],
         [
             {"role": "user", "content": "javathelo: summon a pig"},
             {"role": "assistant", "content": "!spawnEntity('pig')"},
-            {"role": "system", "content": "Code Output:\nYou have summoned a pig.\nCode execution finished successfully."}
+            {"role": "system", "content": "Code Output:\nI have summoned a pig.\nCode execution finished successfully."}
+        ],
+        [
+            {"role": "user", "content": "javathelo: start flying"},
+            {"role": "assistant", "content": "!setFlyingMode(true)"},
+            {"role": "system", "content": "Code Output:\nI am now flying.\nCode execution finished successfully."}
         ]
     ],
 

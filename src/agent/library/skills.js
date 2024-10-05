@@ -1262,13 +1262,13 @@ export async function spawnEntity(bot, type) {
         log(bot, `Could not spawn ${type}, no blocks nearby.`);
         return false;
     }
-    await bot.lookAt(block);
+    await bot.lookAt(block.position);
     await bot.activateBlock(block);
     log(bot, `Spawned ${type}.`);
     return true;
 }
 
-async function getItem(bot, itemName) {
+export async function getItem(bot, itemName) {
     /**
      * Get the item from the bot's inventory, or produce it if the game is in creative mode.
      */
@@ -1281,4 +1281,17 @@ async function getItem(bot, itemName) {
         return false;
     }
     return item;
+}
+
+export async function setFlyingMode(bot, flying) {
+    /**
+     * Start flying mode.
+     */
+    if (flying) {
+        bot.creative.startFlying();
+    } else {
+        bot.creative.stopFlying();
+    }
+    log(bot, `Set flying mode to ${flying}.`);
+    return true;
 }
