@@ -560,11 +560,8 @@ export async function placeBlock(bot, blockType, x, y, z, placeOn='bottom', dont
         return true;
     }
 
-    let block = bot.inventory.items().find(item => item.name === blockType);
-    if (!block && bot.game.gameMode === 'creative') {
-        await bot.creative.setInventorySlot(36, mc.makeItem(blockType, 1)); // 36 is first hotbar slot
-        block = bot.inventory.items().find(item => item.name === blockType);
-    }
+    let block = await getItem(bot, blockType);
+
     if (!block) {
         log(bot, `Don't have any ${blockType} to place.`);
         return false;
@@ -664,11 +661,13 @@ export async function equip(bot, itemName) {
      * @example
      * await skills.equip(bot, "iron_pickaxe");
      **/
-    let item = bot.inventory.items().find(item => item.name === itemName);
+    let item = await getItem(bot, itemName);
+
     if (!item) {
         log(bot, `You do not have any ${itemName} to equip.`);
         return false;
     }
+    
     if (itemName.includes('leggings')) {
         await bot.equip(item, 'legs');
     }
@@ -699,7 +698,7 @@ export async function discard(bot, itemName, num=-1) {
      **/
     let discarded = 0;
     while (true) {
-        let item = bot.inventory.items().find(item => item.name === itemName);
+        let item = await getItem(bot, itemName);
         if (!item) {
             break;
         }
@@ -1251,6 +1250,35 @@ export async function spawnEntity(bot, type) {
         log(bot, `Spawned ${type}.`);
         return true;
     }
-    log(bot, `Cannot spawn entities without cheats enabled.`);
-    return false;
+
+    let egg = await getItem(bot, `${type}_spawn_egg`);
+    if (!egg) {
+        log(bot, `Failed to get a ${type}_spawn_egg to spawn ${type}.`);
+        return false;
+    }
+    await bot.equip(egg, 'hand');
+    let block = await world.getNearestBlock(bot, null, 4);
+    if (!block) {
+        log(bot, `Could not spawn ${type}, no blocks nearby.`);
+        return false;
+    }
+    await bot.lookAt(block);
+    await bot.activateBlock(block);
+    log(bot, `Spawned ${type}.`);
+    return true;
+}
+
+async function getItem(bot, itemName) {
+    /**
+     * Get the item from the bot's inventory, or produce it if the game is in creative mode.
+     */
+    if (bot.game.gameMode === 'creative') {
+        await bot.creative.setInventorySlot(36, mc.makeItem(itemName, 1)); // 36 is first hotbar slot
+    }
+    let item = bot.inventory.items().find(item => item.name === itemName);
+    if (!item) {
+        log(bot, `You do not have any ${itemName}.`);
+        return false;
+    }
+    return item;
 }

@@ -17,7 +17,7 @@
         "item_collecting": true,
         "torch_placing": false,
         "idle_staring": true,
-        "cheat": true
+        "cheat": false
     },
 
     "conversation_examples": [
@@ -136,12 +136,12 @@
         ],
 
         [
-            {"role": "user", "content": "jarjar: spawn a pig"},
+            {"role": "user", "content": "javathelo: spawn a pig"},
             {"role": "assistant", "content": "!spawnEntity('pig')"},
             {"role": "system", "content": "Code Output:\nYou have spawned a pig.\nCode execution finished successfully."}
         ],
         [
-            {"role": "user", "content": "jarjar: summon a pig"},
+            {"role": "user", "content": "javathelo: summon a pig"},
             {"role": "assistant", "content": "!spawnEntity('pig')"},
             {"role": "system", "content": "Code Output:\nYou have summoned a pig.\nCode execution finished successfully."}
         ]

@@ -346,5 +346,5 @@ export const actionsList = [
         perform: wrapExecution(async (agent, entity_name) => {
             await skills.spawnEntity(agent.bot, entity_name);
         })
-    },
+    }
 ];
