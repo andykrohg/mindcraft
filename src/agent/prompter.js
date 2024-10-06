@@ -18,8 +18,7 @@ export class Prompter {
         this.profile = JSON.parse(readFileSync(fp, 'utf8'));
         this.convo_examples = null;
         this.coding_examples = null;
-        let matches = process.env.HOSTNAME.matchAll(/-(.[a-z0-9]+)$/g);
-        this.name = "rhbot_" + matches.next().value[1];
+        this.name = process.env.BOT_NAME || this.profile.name;
         console.log(this.name);
 
         let chat = process.env.MODEL || this.profile.model;

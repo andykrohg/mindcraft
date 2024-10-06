@@ -12,7 +12,7 @@ ENV MINECRAFT_SERVER_HOST=localhost \
     MINECRAFT_SERVER_PORT=8080 \
     MINECRAFT_SERVER_VERSION=1.19.4 \
     MODEL_SERVER_ENDPOINT=http://openshift.com:8080 \
-    PROFILE=llama \
+    PROFILE=demojam \
     MODEL=mistral \
     OPENAI_API_KEY=123
     
