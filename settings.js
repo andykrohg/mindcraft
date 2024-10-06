@@ -4,6 +4,7 @@ export default
     "host": process.env.MINECRAFT_SERVER_HOST || "localhost", //minecraft server host 
     "port": process.env.MINECRAFT_SERVER_PORT || 8080, //minecraft server port
     "auth": "offline", // or "microsoft"
+    "demogorgon": true, // enable demogorgon mode
     
     "profiles": [
         `./profiles/${process.env.PROFILE || "demojam"}.json`,

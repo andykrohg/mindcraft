@@ -49,7 +49,7 @@ export class Agent {
                 "Set the weather to",
                 "Gamerule "
             ];
-            const eventname = settings.profiles.length > 1 ? 'whisper' : 'chat';
+            const eventname = settings.demogorgon ? 'whisper' : 'chat';
             this.bot.on(eventname, (username, message) => {
                 if (username === this.name) return;
                 
