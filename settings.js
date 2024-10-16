@@ -1,6 +1,6 @@
 export default 
 {
-    "minecraft_version": process.env.MINECRAFT_SERVER_VERSION || "1.19.4", // supports up to 1.20.4
+    "minecraft_version": process.env.MINECRAFT_SERVER_VERSION || "1.20.4", // supports up to 1.20.4
     "host": process.env.MINECRAFT_SERVER_HOST || "localhost", //minecraft server host 
     "port": process.env.MINECRAFT_SERVER_PORT || 8080, //minecraft server port
     "auth": "offline", // or "microsoft"
