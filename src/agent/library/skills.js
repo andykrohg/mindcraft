@@ -1257,13 +1257,8 @@ export async function spawnEntity(bot, type) {
         return false;
     }
     await bot.equip(egg, 'hand');
-    let block = await world.getNearestBlock(bot, null, 4);
-    if (!block) {
-        log(bot, `Could not spawn ${type}, no blocks nearby.`);
-        return false;
-    }
-    await bot.lookAt(block.position);
-    await bot.activateBlock(block);
+    await activateNearestBlock(bot)
+
     log(bot, `Spawned ${type}.`);
     return true;
 }
