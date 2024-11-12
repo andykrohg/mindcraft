@@ -1283,7 +1283,8 @@ export async function setFlyingMode(bot, flying) {
      * Start flying mode.
      */
     if (flying) {
-        bot.creative.startFlying();
+        const pos_above = world.getPosition(bot).plus(Vec3(0,1,0));
+        bot.creative.flyTo(pos_above);
     } else {
         bot.creative.stopFlying();
     }

@@ -10,6 +10,7 @@ import { GPT } from '../models/gpt.js';
 import { Claude } from '../models/claude.js';
 import { ReplicateAPI } from '../models/replicate.js';
 import { Local } from '../models/local.js';
+import { VLLM } from '../models/vllm.js';
 
 
 export class Prompter {
@@ -20,22 +21,31 @@ export class Prompter {
         this.coding_examples = null;
         let matches = process.env.HOSTNAME.matchAll(/-(.[a-z0-9]+)$/g);
         this.name = `${process.env.USERNAME}_${matches.next().value[1]}`;
-        console.log(this.name);
 
-        let chat = process.env.MODEL || this.profile.model;
-        let url = process.env.MODEL_SERVER_ENDPOINT || this.profile.url;
-        if (typeof chat === 'string' || chat instanceof String) {
-            chat = {model: chat};
-            if (chat.model.includes('gemini'))
-                chat.api = 'google';
-            else if (chat.model.includes('gpt'))
-                chat.api = 'openai';
-            else if (chat.model.includes('claude'))
-                chat.api = 'anthropic';
-            else if (chat.model.includes('meta/') || chat.model.includes('replicate/'))
-                chat.api = 'replicate';
-            else
-                chat.api = 'ollama';
+        // Initialize chat properties
+        let chat = {
+            modelName: process.env.CHAT_MODEL_NAME,
+            server: process.env.CHAT_MODEL_SERVER,
+            apiKey: process.env.CHAT_MODEL_API_KEY
+        };
+
+        let embedding = {
+            modelName: process.env.EMBEDDING_MODEL_NAME,
+            server: process.env.EMBEDDING_MODEL_SERVER,
+            apiKey: process.env.EMBEDDING_MODEL_API_KEY
+        }
+
+        if (chat.modelName.includes('gemini'))
+            chat.api = 'google';
+        else if (chat.modelName.includes('gpt'))
+            chat.api = 'openai';
+        else if (chat.modelName.includes('claude'))
+            chat.api = 'anthropic';
+        else if (chat.modelName.includes('meta/') || chat.modelName.includes('replicate/'))
+            chat.api = 'replicate';
+        else {
+            chat.api = 'vllm';
+            embedding.api = 'vllm';
         }
 
         console.log('Using chat settings:', chat);
@@ -48,20 +58,10 @@ export class Prompter {
             this.chat_model = new Claude(chat.model, chat.url);
         else if (chat.api == 'replicate')
             this.chat_model = new ReplicateAPI(chat.model, chat.url);
-        else if (chat.api == 'ollama')
-            this.chat_model = new Local(chat.model, url);
+        else if (chat.api == 'vllm')
+            this.chat_model = new VLLM(chat.modelName, chat.server, chat.apiKey);
         else
             throw new Error('Unknown API:', api);
-
-        let embedding = this.profile.embedding;
-        if (embedding === undefined) {
-            if (chat.api !== 'ollama')
-                embedding = {api: chat.api};
-            else
-                embedding = {api: 'none'};
-        }
-        else if (typeof embedding === 'string' || embedding instanceof String)
-            embedding = {api: embedding};
 
         console.log('Using embedding settings:', embedding);
 
@@ -71,8 +71,8 @@ export class Prompter {
             this.embedding_model = new GPT(embedding.model, embedding.url);
         else if (embedding.api == 'replicate') 
             this.embedding_model = new ReplicateAPI(embedding.model, embedding.url);
-        else if (embedding.api == 'ollama')
-            this.embedding_model = new Local(embedding.model, embedding.url);
+        else if (embedding.api == 'vllm')
+            this.embedding_model = new VLLM(embedding.modelName, embedding.server, embedding.apiKey);
         else {
             this.embedding_model = null;
             console.log('Unknown embedding: ', embedding ? embedding.api : '[NOT SPECIFIED]', '. Using word overlap.');
