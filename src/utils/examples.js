@@ -6,7 +6,6 @@ export class Examples {
         this.examples = [];
         this.model = model;
         this.select_num = select_num;
-        this.embeddings = {};
     }
 
     turnsToText(turns) {
@@ -34,7 +33,14 @@ export class Examples {
         if (this.model !== null) {
             const embeddingPromises = this.examples.map(async (example) => {
                 let turn_text = this.turnsToText(example);
-                this.embeddings[turn_text] = await this.model.embed(turn_text);
+
+                let document = {
+                    pageContent: turn_text,
+                    metadata: {
+                        example: example
+                    }
+                }
+                this.model.addToVectorDatabase(document);
             });
             await Promise.all(embeddingPromises);
         }
@@ -42,20 +48,7 @@ export class Examples {
 
     async getRelevant(turns) {
         let turn_text = this.turnsToText(turns);
-        if (this.model !== null) {
-            let embedding = await this.model.embed(turn_text);
-            this.examples.sort((a, b) => 
-                cosineSimilarity(embedding, this.embeddings[this.turnsToText(b)]) -
-                cosineSimilarity(embedding, this.embeddings[this.turnsToText(a)])
-            );
-        }
-        else {
-            this.examples.sort((a, b) => 
-                this.wordOverlapScore(turn_text, this.turnsToText(b)) -
-                this.wordOverlapScore(turn_text, this.turnsToText(a))
-            );
-        }
-        let selected = this.examples.slice(0, this.select_num);
+        let selected = await this.model.searchVectorDatabase(turn_text);
         return JSON.parse(JSON.stringify(selected)); // deep copy
     }
 

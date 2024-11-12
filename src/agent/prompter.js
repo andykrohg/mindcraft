@@ -5,12 +5,8 @@ import { getSkillDocs } from './library/index.js';
 import { stringifyTurns } from '../utils/text.js';
 import { getCommand } from './commands/index.js';
 
-import { Gemini } from '../models/gemini.js';
-import { GPT } from '../models/gpt.js';
-import { Claude } from '../models/claude.js';
-import { ReplicateAPI } from '../models/replicate.js';
-import { Local } from '../models/local.js';
-import { VLLM } from '../models/vllm.js';
+import { GPT } from '../clients/gpt.js';
+import { Custom } from '../clients/custom.js';
 
 
 export class Prompter {
@@ -35,48 +31,7 @@ export class Prompter {
             apiKey: process.env.EMBEDDING_MODEL_API_KEY
         }
 
-        if (chat.modelName.includes('gemini'))
-            chat.api = 'google';
-        else if (chat.modelName.includes('gpt'))
-            chat.api = 'openai';
-        else if (chat.modelName.includes('claude'))
-            chat.api = 'anthropic';
-        else if (chat.modelName.includes('meta/') || chat.modelName.includes('replicate/'))
-            chat.api = 'replicate';
-        else {
-            chat.api = 'vllm';
-            embedding.api = 'vllm';
-        }
-
-        console.log('Using chat settings:', chat);
-
-        if (chat.api == 'google')
-            this.chat_model = new Gemini(chat.model, chat.url);
-        else if (chat.api == 'openai')
-            this.chat_model = new GPT(chat.model, chat.url);
-        else if (chat.api == 'anthropic')
-            this.chat_model = new Claude(chat.model, chat.url);
-        else if (chat.api == 'replicate')
-            this.chat_model = new ReplicateAPI(chat.model, chat.url);
-        else if (chat.api == 'vllm')
-            this.chat_model = new VLLM(chat.modelName, chat.server, chat.apiKey);
-        else
-            throw new Error('Unknown API:', api);
-
-        console.log('Using embedding settings:', embedding);
-
-        if (embedding.api == 'google')
-            this.embedding_model = new Gemini(embedding.model, embedding.url);
-        else if (embedding.api == 'openai')
-            this.embedding_model = new GPT(embedding.model, embedding.url);
-        else if (embedding.api == 'replicate') 
-            this.embedding_model = new ReplicateAPI(embedding.model, embedding.url);
-        else if (embedding.api == 'vllm')
-            this.embedding_model = new VLLM(embedding.modelName, embedding.server, embedding.apiKey);
-        else {
-            this.embedding_model = null;
-            console.log('Unknown embedding: ', embedding ? embedding.api : '[NOT SPECIFIED]', '. Using word overlap.');
-        }
+        this.client = new Custom(chat.server, chat.modelName, chat.apiKey, embedding.server, embedding.modelName, embedding.apiKey);
 
         mkdirSync(`./bots/${this.name}`, { recursive: true });
         writeFileSync(`./bots/${this.name}/last_profile.json`, JSON.stringify(this.profile, null, 4), (err) => {
@@ -98,8 +53,8 @@ export class Prompter {
     async initExamples() {
         // Using Promise.all to implement concurrent processing
         // Create Examples instances
-        this.convo_examples = new Examples(this.embedding_model);
-        this.coding_examples = new Examples(this.embedding_model);
+        this.convo_examples = new Examples(this.client);
+        this.coding_examples = new Examples(this.client);
         // Use Promise.all to load examples concurrently
         await Promise.all([
             this.convo_examples.load(this.profile.conversation_examples),
@@ -165,19 +120,19 @@ export class Prompter {
     async promptConvo(messages) {
         let prompt = this.profile.conversing;
         prompt = await this.replaceStrings(prompt, messages, this.convo_examples);
-        return await this.chat_model.sendRequest(messages, prompt);
+        return await this.client.sendRequest(messages, prompt);
     }
 
     async promptCoding(messages) {
         let prompt = this.profile.coding;
         prompt = await this.replaceStrings(prompt, messages, this.coding_examples);
-        return await this.chat_model.sendRequest(messages, prompt);
+        return await this.client.sendRequest(messages, prompt);
     }
 
     async promptMemSaving(prev_mem, to_summarize) {
         let prompt = this.profile.saving_memory;
         prompt = await this.replaceStrings(prompt, null, null, prev_mem, to_summarize);
-        return await this.chat_model.sendRequest([], prompt);
+        return await this.client.sendRequest([], prompt);
     }
 
     async promptGoalSetting(messages, last_goals) {
@@ -189,7 +144,7 @@ export class Prompter {
         user_message = await this.replaceStrings(user_message, messages, null, null, null, last_goals);
         let user_messages = [{role: 'user', content: user_message}];
 
-        let res = await this.chat_model.sendRequest(user_messages, system_message);
+        let res = await this.client.sendRequest(user_messages, system_message);
 
         let goal = null;
         try {
