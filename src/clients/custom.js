@@ -4,6 +4,7 @@ import {
 } from "@langchain/community/vectorstores/elasticsearch";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Client } from '@elastic/elasticsearch';
+import  crypto  from 'crypto';
 
 export class Custom {
     constructor(chatModelServer, chatModelName, chatModelApiKey, embeddingModelServer, embeddingModelName, embeddingModelApiKey, elasticServer, elasticUsername, elasticPassword) {
@@ -70,9 +71,8 @@ export class Custom {
     }
 
     async addToVectorDatabase(document) {
-        let ids = await this.vectorStore.addDocuments([document]);
-
-        console.log(ids);
+        let id = crypto.createHash('md5').update(document.pageContent).digest('hex');
+        this.vectorStore.addDocuments([document],{ids:[id]});
     }
 
     async searchVectorDatabase(query) {
