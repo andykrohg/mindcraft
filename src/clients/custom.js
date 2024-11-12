@@ -1,5 +1,4 @@
 import OpenAIApi from 'openai';
-import { getKey, hasKey } from '../utils/keys.js';
 import {
     ElasticVectorSearch,
 } from "@langchain/community/vectorstores/elasticsearch";
@@ -7,15 +6,13 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { Client } from '@elastic/elasticsearch';
 
 export class Custom {
-    constructor(chatModelServer, chatModelName, chatModelApiKey, embeddingModelServer, embeddingModelName, embeddingModelApiKey) {
+    constructor(chatModelServer, chatModelName, chatModelApiKey, embeddingModelServer, embeddingModelName, embeddingModelApiKey, elasticServer, elasticUsername, elasticPassword) {
         this.chatModelServer = chatModelServer;
         this.chatModelName = chatModelName;
         this.chatModelApiKey = chatModelApiKey;
         this.embeddingModelServer = embeddingModelServer;
         this.embeddingModelName = embeddingModelName;
         this.embeddingModelApiKey = embeddingModelApiKey;
-
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
         this.chatClient = new OpenAIApi({
             baseURL: this.chatModelServer,
@@ -31,10 +28,10 @@ export class Custom {
         });
 
         this.elasticClient = new Client({
-            node: 'https://localhost:9200',
+            node: elasticServer,
             auth: {
-                username: 'elastic',
-                password: 'FPW7Z33bTu6Eax3V5L61n6I7'
+                username: elasticUsername,
+                password: elasticPassword
             }
         });
 

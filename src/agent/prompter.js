@@ -31,7 +31,13 @@ export class Prompter {
             apiKey: process.env.EMBEDDING_MODEL_API_KEY
         }
 
-        this.client = new Custom(chat.server, chat.modelName, chat.apiKey, embedding.server, embedding.modelName, embedding.apiKey);
+        let elastic = {
+            server: process.env.ELASTICSEARCH_SERVER,
+            username: process.env.ELASTICSEARCH_USERNAME,
+            password: process.env.ELASTICSEARCH_PASSWORD
+        }
+
+        this.client = new Custom(chat.server, chat.modelName, chat.apiKey, embedding.server, embedding.modelName, embedding.apiKey, elastic.server, elastic.username, elastic.password);
 
         mkdirSync(`./bots/${this.name}`, { recursive: true });
         writeFileSync(`./bots/${this.name}/last_profile.json`, JSON.stringify(this.profile, null, 4), (err) => {
