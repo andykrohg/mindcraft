@@ -37,6 +37,7 @@ export class Examples {
                 let document = {
                     pageContent: turn_text,
                     metadata: {
+                        type: 'example',
                         example: example
                     }
                 }
