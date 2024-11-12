@@ -48,8 +48,13 @@ export class Examples {
 
     async getRelevant(turns) {
         let turn_text = this.turnsToText(turns);
-        let selected = await this.model.searchVectorDatabase(turn_text);
-        return JSON.parse(JSON.stringify(selected)); // deep copy
+        let documents = await this.model.searchVectorDatabase(turn_text);
+        let selectedExamples = [];
+        documents.map(doc => 
+            selectedExamples.push(doc[0].metadata.example)
+        );
+
+        return JSON.parse(JSON.stringify(selectedExamples)); // deep copy
     }
 
     async createExampleMessage(turns) {

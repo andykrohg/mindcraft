@@ -50,8 +50,8 @@ export class Custom {
         let res = null;
         try {
             console.log('Awaiting openai api response...')
-            let completion = await this.openai.chat.completions.create({
-                model: this.model_name || "gpt-3.5-turbo",
+            let completion = await this.chatClient.chat.completions.create({
+                model: this.chatModelName,
                 messages: messages,
                 stop: stop_seq,
             });
