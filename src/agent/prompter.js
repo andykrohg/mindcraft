@@ -16,7 +16,8 @@ export class Prompter {
         this.convo_examples = null;
         this.coding_examples = null;
         let matches = process.env.HOSTNAME.matchAll(/-(.[a-z0-9]+)$/g);
-        this.name = `${process.env.USERNAME}_${matches.next().value[1]}`;
+        // this.name = `${process.env.USERNAME}_${matches.next().value[1]}`;
+        this.name = process.env.USERNAME.slice(0, 16)
 
         // Initialize chat properties
         let chat = {
