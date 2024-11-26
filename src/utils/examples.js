@@ -49,7 +49,14 @@ export class Examples {
 
     async getRelevant(turns) {
         let turn_text = this.turnsToText(turns);
-        let documents = await this.model.searchVectorDatabase(turn_text);
+        const filter = [
+            {
+              operator: "match",
+              field: "type",
+              value: "example",
+            },
+          ];
+        let documents = await this.model.searchVectorDatabase(turn_text, filter);
         let selectedExamples = [];
         documents.map(doc => 
             selectedExamples.push(doc[0].metadata.example)

@@ -75,8 +75,8 @@ export class Custom {
         this.vectorStore.addDocuments([document],{ids:[id]});
     }
 
-    async searchVectorDatabase(query) {
-        const similaritySearchResults = await this.vectorStore.similaritySearchWithScore(query, 2);
+    async searchVectorDatabase(query, filter) {
+        const similaritySearchResults = await this.vectorStore.similaritySearchWithScore(query, 2, filter);
         return similaritySearchResults;
     }
 }
