@@ -346,15 +346,5 @@ export const actionsList = [
         perform: wrapExecution(async (agent, entity_name) => {
             await skills.spawnEntity(agent.bot, entity_name);
         })
-    },
-    {
-        name: '!setFlyingMode',
-        description: 'Set flying mode to on or off.',
-        params: {
-            'flying': '(bool) Whether to enable or disable flying mode.'
-        },
-        perform: wrapExecution(async (agent, flying) => {
-            await skills.setFlyingMode(agent.bot, flying);
-        })
     }
 ];
