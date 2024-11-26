@@ -4,6 +4,9 @@ import Vec3 from 'vec3';
 
 const log = skills.log;
 
+/**
+ * PROMPT HERE
+ **/
 export async function main(bot) {
     /* CODE HERE */
     log(bot, 'Code finished.');

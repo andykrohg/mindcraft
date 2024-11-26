@@ -21,7 +21,7 @@ export class Coder {
     }
 
     // write custom code to file and import it
-    async stageCode(code) {
+    async stageCode(prompt, code) {
         code = this.sanitizeCode(code);
         let src = '';
         code = code.replaceAll('console.log(', 'log(bot,');
@@ -35,6 +35,7 @@ export class Coder {
             src += `    ${line}\n`;
         }
         src = this.code_template.replace('/* CODE HERE */', src);
+        src = src.replace('PROMPT HERE', prompt);
 
         let filename = this.file_counter + '.js';
         // if (this.file_counter > 0) {
@@ -92,6 +93,10 @@ export class Coder {
 
     async generateCodeLoop(agent_history) {
         let messages = agent_history.getHistory();
+
+        let turnContent = agent_history.turns.filter(turn => turn.role === 'user').map(turn => turn.content);
+        let prompt = turnContent[turnContent.length-1];
+
         messages.push({role: 'system', content: 'Code generation started. Write code in codeblock in your response:'});
 
         let code = null;
@@ -127,7 +132,7 @@ export class Coder {
             }
             code = res.substring(res.indexOf('```')+3, res.lastIndexOf('```'));
 
-            const execution_file = await this.stageCode(code);
+            const execution_file = await this.stageCode(prompt, code);
             if (!execution_file) {
                 agent_history.add('system', 'Failed to stage code, something is wrong.');
                 return {success: false, message: null, interrupted: false, timedout: false};
